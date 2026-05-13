@@ -16,13 +16,28 @@ export default function Card({ card, onClick, disabled }) {
         `}
       >
         <div
-          className="card-face absolute inset-0 bg-white flex items-center justify-center shadow-xl overflow-hidden cursor-pointer rounded-[22px] min-[400px]:rounded-[30px] min-[500px]:rounded-[32px] min-[600px]:rounded-[36px] sm:rounded-[44px] md:rounded-[30px] lg:rounded-[30px]"
+          className="
+            card-face
+            absolute
+            inset-0
+            bg-blue-500
+            flex
+            items-center
+            justify-center
+            shadow-xl
+            rounded-[22px]
+            min-[400px]:rounded-[30px]
+            min-[500px]:rounded-[32px]
+            min-[600px]:rounded-[36px]
+            sm:rounded-[44px]
+            md:rounded-[30px]
+            lg:rounded-[30px]
+            hover:cursor-pointer
+          "
         >
-          <img
-            src={logo}
-            alt="Card back"
-            className=" object-contain opacity-50 hover:opacity-80"
-          />
+          <span className="text-yellow-300 text-6xl font-black">
+            ?
+          </span>
         </div>
 
         <div
