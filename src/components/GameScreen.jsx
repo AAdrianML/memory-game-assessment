@@ -9,7 +9,8 @@ import backgroundMusic from '../assets/background.mp3'
 import correctSoundFile from '../assets/correct.mp3'
 import incorrectSoundFile from '../assets/incorrect.mp3'
 import tickingSoundFile from '../assets/ticking.mp3'
-import { mutedState} from '../store/uiState'
+import { mutedState } from '../store/uiState'
+const GAME_TIME = 30
 export default function GameScreen({
   onFinish,
 }) {
@@ -18,6 +19,7 @@ export default function GameScreen({
   const correctAudio = useRef(null)
   const incorrectAudio = useRef(null)
   const tickingAudio = useRef(null)
+  const timeoutRefs = useRef([])
 
   const initialCards = useMemo(() => {
     const duplicatedCards = [...cardSymbols, ...cardSymbols]
@@ -34,7 +36,7 @@ export default function GameScreen({
   const [cards, setCards] = useState(initialCards)
   const [selectedCards, setSelectedCards] = useState([])
   const [disabled, setDisabled] = useState(false)
-  const [timer, setTimer] = useState(30)
+  const [timer, setTimer] = useState(GAME_TIME)
   const [modalMessage, setModalMessage] = useState('')
 
   useEffect(() => {
@@ -49,6 +51,7 @@ export default function GameScreen({
     return () => {
       backgroundAudio.current?.pause()
       tickingAudio.current?.pause()
+      timeoutRefs.current.forEach(clearTimeout)
     }
   }, [])
 
@@ -60,13 +63,13 @@ export default function GameScreen({
       backgroundAudio.current?.play()
       if (timer <= 10) playTickingSound()
     }
-  }, [muted])
+  }, [muted, timer])
 
   const handleTimerEnd = () => {
     backgroundAudio.current?.pause()
     tickingAudio.current?.pause()
 
-    onFinish(false, 30)
+    onFinish(false, GAME_TIME)
   }
 
   const playTickingSound = () => {
@@ -130,36 +133,39 @@ export default function GameScreen({
   }
 
   const handleMatch = (first, second) => {
-    setModalMessage("Nice! It's a match")
+    setModalMessage("nice! it's a match")
 
     playCorrectSound()
 
     markCardsAsMatched(first, second)
 
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       setModalMessage('')
       setSelectedCards([])
       setDisabled(false)
     }, 1000)
+
+    timeoutRefs.current.push(timeoutId)
   }
 
   const handleMismatch = (first, second) => {
-    setModalMessage('Sorry, but this is not a match')
+    setModalMessage('sorry, but this is not a match')
 
     playIncorrectSound()
 
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       unflipCards(first, second)
 
       setModalMessage('')
       setSelectedCards([])
       setDisabled(false)
     }, 1200)
+    timeoutRefs.current.push(timeoutId)
   }
 
   const handleCardClick = clickedCard => {
     if (disabled) return
-
+    setDisabled(true)
     const updatedCards = cards.map(card => {
       if (card.uniqueId === clickedCard.uniqueId) {
         return {
@@ -179,9 +185,13 @@ export default function GameScreen({
     setCards(updatedCards)
     setSelectedCards(updatedSelectedCards)
 
-    if (updatedSelectedCards.length !== 2) return
-
-    setDisabled(true)
+    if (updatedSelectedCards.length !== 2) {
+      const timeoutId = setTimeout(() => {
+        setDisabled(false)
+      }, 500)
+      timeoutRefs.current.push(timeoutId)
+      return
+    }
 
     const [first, second] = updatedSelectedCards
 
@@ -202,7 +212,7 @@ export default function GameScreen({
       backgroundAudio.current?.pause()
       tickingAudio.current?.pause()
 
-      const completionTime = 30 - timer
+      const completionTime = GAME_TIME - timer
 
       onFinish(true, completionTime)
     }
