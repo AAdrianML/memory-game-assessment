@@ -1,5 +1,5 @@
 import logo from '../assets/logo.svg'
-import { useRecoilState } from 'recoil'
+import { useRecoilValue } from 'recoil'
 import {
   darkModeState,
   mutedState,
@@ -9,7 +9,7 @@ export default function StartScreen({
   setNickname,
   onStart,
 }) {
-  const [darkMode, setDarkMode] = useRecoilState(darkModeState)
+  const darkMode = useRecoilValue(darkModeState)
   const isDisabled = !nickname.trim()
   return (
     <div className='min-h-screen flex flex-col items-center justify-center px-6 text-center'>
