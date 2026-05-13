@@ -10,6 +10,7 @@ export default function StartScreen({
   onStart,
 }) {
   const [darkMode, setDarkMode] = useRecoilState(darkModeState)
+  const isDisabled = !nickname.trim()
   return (
     <div className='min-h-screen flex flex-col items-center justify-center px-6 text-center'>
       <div className='slide-top flex flex-col items-center'>
@@ -43,9 +44,9 @@ export default function StartScreen({
 
         <button
           onClick={onStart}
-          disabled={!nickname.trim()}
-          className={`px-6 py-4 rounded-2xl bg-indigo-500 text-white font-bold text-xl disabled:opacity-50 mt-4 ${nickname.trim() &&
-            'hover:animate-bounce cursor-pointer'
+          disabled={isDisabled}
+          className={`px-6 py-4 rounded-2xl bg-indigo-500 text-white font-bold text-xl disabled:opacity-50 mt-4 ${!isDisabled ?
+            'hover:animate-bounce cursor-pointer' : ''
             }`}
         >
           Start

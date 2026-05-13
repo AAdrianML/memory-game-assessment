@@ -12,7 +12,7 @@ export default function Header({
 }) {
   const [darkMode, setDarkMode] = useRecoilState(darkModeState)
   const [muted, setMuted] = useRecoilState(mutedState)
-    
+
   return (
     <header className="flex items-center justify-between px-6 py-4">
       <button
@@ -88,6 +88,27 @@ export default function Header({
       gap-3
     "
       >
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          className={
+            `
+            px-4
+            py-2
+            rounded-2xl
+            text-white
+            font-semibold
+            hover:scale-105
+            active:scale-95
+            transition-all
+            duration-200
+            shadow-md
+            cursor-pointer
+            ${darkMode ? "bg-indigo-500" : "bg-gray-800"}
+           `
+          }
+        >
+          {darkMode ? "Light" : "Dark"}
+        </button>
         {screen === "game" && (
           <button
             onClick={() => setMuted(!muted)}
@@ -114,28 +135,6 @@ export default function Header({
             />
           </button>
         )}
-
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          className={
-            `
-            px-4
-            py-2
-            rounded-2xl
-            text-white
-            font-semibold
-            hover:scale-105
-            active:scale-95
-            transition-all
-            duration-200
-            shadow-md
-            cursor-pointer
-            ${darkMode ? "bg-indigo-500" : "bg-gray-800"}
-           `
-          }
-        >
-          {darkMode ? "Light" : "Dark"}
-        </button>
       </div>
     </header>
   );
